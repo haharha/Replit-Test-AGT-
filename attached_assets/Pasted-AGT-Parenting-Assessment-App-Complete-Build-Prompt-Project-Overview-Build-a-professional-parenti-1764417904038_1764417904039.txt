@@ -1,0 +1,441 @@
+AGT Parenting Assessment App - Complete Build Prompt
+Project Overview
+Build a professional parenting assessment web application for Absolute Genetic Technologies (AGT) that helps parents identify their child's behavioral and health concerns, then recommends personalized PDF resources based on severity ratings.
+Brand Identity
+Logo & Colors
+Primary Brand Color: #3FA9F5 (bright blue from logo)
+Secondary Color: #7A7A7A (gray from "ABSOLUTE GENETIC TECHNOLOGIES")
+Accent Color: #2E8BC0 (darker blue for hover states)
+Background: #FFFFFF (white) with subtle #F8F9FA (light gray) sections
+Text: #333333 (dark gray for readability)
+Typography
+Headings: 'Poppins', sans-serif (modern, friendly)
+Body: 'Inter', sans-serif (highly readable)
+Font Sizes:
+H1: 2.5rem
+H2: 2rem
+Body: 1rem
+Small: 0.875rem
+Logo Usage
+Display AGT logo (upload provided image) in header
+Tagline: "ABSOLUTE GENETIC TECHNOLOGIES" below logo in gray
+
+Application Flow & Structure
+Page 1: Welcome Screen
+Purpose: Warm introduction to build trust
+Content:
+Hi there! 👋 
+
+Thanks so much for taking the time to understand your child better. We know being a parent isn't easy—a lot of love, patience, and effort go into it. You're doing something amazing by taking this step to learn more about your child's behavior and wellbeing.
+
+Today's assessment will help us:
+✓ Identify your child's behavioral patterns
+✓ Understand health and nutrition concerns
+✓ Provide personalized guidance tailored to your child's needs
+
+At the end, you'll receive our top 3 recommended resources based on your responses. Let's get started! 🌱
+UI Elements:
+Large, friendly heading
+Centered content with max-width 800px
+Illustration/icon of parent & child (use lucide-react icons)
+Prominent "Start Assessment" button (blue, rounded)
+Estimated time: "Takes only 5-7 minutes"
+
+Page 2: Contact Information
+Purpose: Collect parent details for follow-up
+Form Fields (all required):
+Parent/Guardian Name (text input)
+Email Address (email input with validation)
+Mobile Phone (tel input with format: +60 12-345 6789)
+Child's Age (number input, 0-18 years)
+UI Elements:
+Clean form layout with labels above inputs
+Input validation with error messages
+"Continue" button (disabled until all fields valid)
+Progress indicator: "Step 1 of 3"
+
+Page 3: Assessment Questions
+Purpose: Rate 14 concerns on 1-5 scale
+Instructions:
+Please rate how much each statement applies to your child:
+1 = Not at all  |  2 = Rarely  |  3 = Sometimes  |  4 = Often  |  5 = Very Often
+Section A: Child Development & Emotional Wellbeing (9 concerns)
+"My child loses interest easily / tends to give up quickly."
+"I don't know what learning method suits my child best."
+"My child struggles to engage with others."
+"My child's emotions (anger, frustration, resilience) can be intense at times. Managing them is challenging."
+"My child has difficulty focusing on tasks."
+"My child doesn't share much with me, and I often wonder what's going on in his/her mind."
+"My child doesn't know what course to study or which career path to pursue."
+"My child is only interested in playing games and shows little interest in other activities."
+"My child is having difficulty keeping up with school lessons and understanding certain subjects."
+Section B: Child Wellness & Nutrition Risk (5 concerns)
+"Some health conditions seem to run in my family, and I worry my children might carry similar risks."
+"My child loves sweets, and I'm concerned this could lead to obesity or diabetes."
+"My child is smaller than other children of the same age. I'm concerned about their nutrition."
+"My child can be low in energy and falls sick easily. I worry about missing nutrients."
+"My child is a picky eater, and I want to ensure they get essential nutrients."
+UI Design:
+Display one section at a time (toggle between A & B with tabs)
+Each question as a card with:
+Question text (large, bold)
+5 radio buttons styled as clickable number circles (1-5)
+Visual feedback on selection (blue highlight)
+Progress bar showing X/14 completed
+"Back" and "Submit Assessment" buttons
+
+Page 4: Results & Recommendations
+Purpose: Show top 3 recommended PDFs with explanations
+Algorithm Logic:
+javascript
+// 1. Filter concerns rated 4 or 5 (high severity)
+// 2. Map concerns to relevant PDFs using this linkage:
+
+const concernToPdfMap = {
+  1: ["Academic Learning", "5 Essential Skills", "Mastering 5 Components EQ"],
+  2: ["Academic Learning", "Brain Development Stages", "Artistic Potential"],
+  3: ["Loneliness in Children", "Mastering 5 Components EQ"],
+  4: ["Mastering 5 Components EQ", "Hyperthymic Temperament"],
+  5: ["Academic Learning", "Low Focus: Poor Memory vs ADHD"],
+  6: ["Loneliness in Children", "20 Art Prompts EQ"],
+  7: ["Brain Development Stages", "5 Essential Skills"],
+  8: ["Parenting Like a Pro", "Brain Development Stages"],
+  9: ["Academic Learning", "Low Focus: Poor Memory vs ADHD"],
+  10: ["Preventing Diabetes (DHDT)", "Brain Development Stages"], // Health weighted higher
+  11: ["Preventing Diabetes (DHDT)"], // Health weighted higher
+  12: ["Brain Development Stages", "From Newborn to One"],
+  13: ["Brain Development Stages", "Preventing Diabetes (DHDT)"],
+  14: ["Brain Development Stages", "From Newborn to One"]
+};
+
+// 3. Weight health concerns (10-14) 1.5x higher
+// 4. Count PDF frequency across high-severity concerns
+// 5. Return top 3 most relevant PDFs
+// 6. If ties, prioritize: Health > Emotional > Academic
+PDF Database (store as JSON):
+json
+[
+  {
+    "id": "academic-learning",
+    "title": "Unlock 9 Hidden Talents: Academic Learning",
+    "subtitle": "Uncover Why Your Child Hates School, Gives Up Easily & Avoids Homework",
+    "category": "Academic",
+    "description": "Discover the 3 hidden reasons behind academic struggles—it's not about IQ or laziness. Learn how to nurture critical thinking, support learning skills, and tailor your approach to your child's unique needs.",
+    "filename": "academic-learning.pdf",
+    "coverImage": "academic-learning-cover.jpg"
+  },
+  {
+    "id": "mastering-eq",
+    "title": "Mastering The 5 Components to Raise Emotionally Intelligent Child",
+    "subtitle": "For Your Child's Success",
+    "category": "Emotional",
+    "description": "Master the 5 pillars of Emotional Intelligence: Self-Awareness, Self-Regulation, Motivation, Empathy, and Social Skills. Includes practical activities tailored to your child's traits.",
+    "filename": "mastering-eq.pdf",
+    "coverImage": "mastering-eq-cover.jpg"
+  },
+  {
+    "id": "preventing-diabetes",
+    "title": "A Guide to Preventing and Reversing Diabetes",
+    "subtitle": "What Doctors Won't Tell You",
+    "category": "Health",
+    "description": "Understand genetic predisposition to diabetes, learn how DNA testing reveals risks before symptoms, and discover personalized nutrition strategies to prevent or reverse Type 2 diabetes.",
+    "filename": "preventing-diabetes.pdf",
+    "coverImage": "preventing-diabetes-cover.jpg"
+  },
+  {
+    "id": "loneliness-children",
+    "title": "Loneliness in Children",
+    "subtitle": "Understanding Social Struggles",
+    "category": "Emotional",
+    "description": "Learn how genetics influence loneliness, recognize warning signs, and discover practical strategies to help your child build confidence and meaningful social connections.",
+    "filename": "loneliness-children.pdf",
+    "coverImage": "loneliness-cover.jpg"
+  },
+  {
+    "id": "5-essential-skills",
+    "title": "5 Essential Skills to Raise Future-Ready Kids in the Age of AI",
+    "subtitle": "Novelty-Seeking, Collaboration, Adaptability, Logical Thinking, Resilience",
+    "category": "Academic",
+    "description": "Prepare your child for the future with 5 critical skills. Includes home activities to nurture curiosity, teamwork, flexibility, reasoning, and persistence.",
+    "filename": "5-essential-skills.pdf",
+    "coverImage": "5-skills-cover.jpg"
+  },
+  {
+    "id": "low-focus",
+    "title": "Low Focus due to Poor Working Memory vs Low Focus due to ADHD",
+    "subtitle": "Understanding the Difference",
+    "category": "Academic",
+    "description": "Not all focus issues are ADHD. Learn the differences between poor working memory and ADHD, plus practical tips to support your child's attention at home.",
+    "filename": "low-focus.pdf",
+    "coverImage": "low-focus-cover.jpg"
+  },
+  {
+    "id": "artistic-potential",
+    "title": "Unlock 9 Hidden Talents: Artistic Potential",
+    "subtitle": "Bonus: 20 Gentle Art Prompts to Grow Emotional Intelligence",
+    "category": "Talent",
+    "description": "Discover how artistic potential is influenced by genetics and how art supports cognitive, emotional, and motor development. Includes 20 creative prompts.",
+    "filename": "artistic-potential.pdf",
+    "coverImage": "artistic-cover.jpg"
+  },
+  {
+    "id": "20-art-prompts",
+    "title": "20 Gentle Art Prompts to Grow Emotional Intelligence",
+    "subtitle": "Creative Activities for Children",
+    "category": "Emotional",
+    "description": "Print-and-use art prompts designed to help children explore feelings, imagination, and self-expression while nurturing their inner artist.",
+    "filename": "20-art-prompts.pdf",
+    "coverImage": "art-prompts-cover.jpg"
+  },
+  {
+    "id": "brain-development",
+    "title": "Brain Development Stages: What to Nurture at Every Age",
+    "subtitle": "Age-Appropriate Activities Guide",
+    "category": "Academic",
+    "description": "Understand the 4 stages of brain development (0-2, 2-5, 6-12, teens) with specific activities to support sensory, language, logical thinking, and independent decision-making skills.",
+    "filename": "brain-development.pdf",
+    "coverImage": "brain-dev-cover.jpg"
+  },
+  {
+    "id": "newborn-to-one",
+    "title": "From Newborn to One: Your First Year with Baby",
+    "subtitle": "Milestones, Activities & Emotional Wellbeing",
+    "category": "Health",
+    "description": "Support your baby's first year with milestone tracking, brain-boosting activities, and guidance on emotional wellbeing for both baby and parents.",
+    "filename": "newborn-to-one.pdf",
+    "coverImage": "newborn-cover.jpg"
+  },
+  {
+    "id": "parenting-pro",
+    "title": "Parenting Like a Pro: A Starter Guide to Parenting Without Fear",
+    "subtitle": "Breaking Free from Helicopter Parenting",
+    "category": "Emotional",
+    "description": "Recognize helicopter parenting patterns, understand their impact, and learn how to give your child the right support without over-involvement.",
+    "filename": "parenting-pro.pdf",
+    "coverImage": "parenting-pro-cover.jpg"
+  },
+  {
+    "id": "hyperthymic",
+    "title": "Hyperthymic Temperament",
+    "subtitle": "Understanding High-Energy Children",
+    "category": "Emotional",
+    "description": "Learn about hyperthymic temperament—high energy, enthusiasm, and optimism. Discover strengths, challenges, and strategies to channel their energy positively.",
+    "filename": "hyperthymic.pdf",
+    "coverImage": "hyperthymic-cover.jpg"
+  }
+]
+```
+
+**Results Page UI**:
+
+**Header Section**:
+```
+🎉 Your Personalized Parenting Guide is Ready!
+
+Based on your responses, we've identified the top areas where your child needs support. Below are our 3 recommended resources tailored specifically for your family.
+```
+
+**PDF Recommendation Cards** (for each of top 3):
+```
+┌─────────────────────────────────────────┐
+│  [Cover Image]                          │
+│                                         │
+│  📘 Title                               │
+│  Subtitle                               │
+│                                         │
+│  Why we recommend this:                │
+│  "Based on your concerns about X and Y, │
+│   this guide will help you..."         │
+│                                         │
+│  [Download PDF Button] [Preview]       │
+└─────────────────────────────────────────┘
+Additional Sections:
+"Why These Resources?" - Brief explanation of how recommendations were selected
+"Want More Support?" - CTA section with 3 options:
+📥 Download All Parenting Guides (button to ZIP download)
+🧬 Explore DNA Testing (link to AGT website)
+📅 Book a Free Consultation (link to calendar/contact)
+Email Confirmation:
+Auto-send email with:
+Thank you message
+Summary of their ratings
+Links to download their 3 recommended PDFs
+AGT branding & social links
+
+Admin Dashboard
+URL: /admin (password protected)
+Authentication:
+Simple password: "agtadmin2025" (stored in environment variable)
+Session-based auth (no complex user system needed)
+Dashboard Features:
+1. Overview Stats (top cards)
+Total Assessments
+Assessments This Week
+Most Common High-Severity Concern
+Average Child Age
+2. Submissions Table
+Columns:
+Date & Time
+Parent Name
+Email
+Phone
+Child Age
+Top Concern (highest rated)
+Actions (View Details, Export)
+Filters:
+Date range picker
+Search by name/email
+Filter by child age range
+Filter by concern category
+3. Export Functionality
+"Export to CSV" button
+Includes all submission data + individual ratings
+Filename: agt-assessments-YYYY-MM-DD.csv
+4. Analytics View (charts)
+Bar chart: Distribution of concern severity (1-5 ratings)
+Pie chart: Most common high-priority concerns
+Line chart: Assessments over time (daily)
+Table: PDF recommendation frequency
+
+Technical Requirements
+Frontend Stack
+React (functional components with hooks)
+React Router for navigation
+Tailwind CSS for styling
+Recharts for admin analytics
+Lucide React for icons
+React Hook Form for form handling
+Zod for validation
+Backend/Storage
+Replit Database for storing:
+Submission data (JSON)
+PDF metadata
+File Storage: Upload all 12 PDFs to Replit's static files
+Key Packages
+json
+{
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "react-hook-form": "^7.48.0",
+    "zod": "^3.22.0",
+    "@hookform/resolvers": "^3.3.0",
+    "recharts": "^2.10.0",
+    "lucide-react": "^0.294.0",
+    "date-fns": "^2.30.0",
+    "file-saver": "^2.0.5"
+  }
+}
+```
+
+### **File Structure**
+```
+/src
+  /components
+    - Header.jsx
+    - ProgressBar.jsx
+    - PdfCard.jsx
+    - LoadingSpinner.jsx
+  /pages
+    - Welcome.jsx
+    - ContactForm.jsx
+    - Assessment.jsx
+    - Results.jsx
+    - AdminDashboard.jsx
+  /utils
+    - pdfRecommendation.js (algorithm)
+    - validation.js (Zod schemas)
+    - emailService.js
+  /data
+    - pdfs.json (PDF metadata)
+    - concernQuestions.json
+  /assets
+    - logo.png
+    - /pdf-covers (12 cover images)
+  App.jsx
+  main.jsx
+
+/public
+  /pdfs (12 PDF files)
+
+Data Storage Schema
+Submission Document
+javascript
+{
+  id: "uuid-string",
+  timestamp: "2025-01-15T10:30:00Z",
+  parentInfo: {
+    name: "Sarah Tan",
+    email: "sarah@example.com",
+    phone: "+60 12-345 6789",
+    childAge: 7
+  },
+  ratings: {
+    concern1: 5,
+    concern2: 3,
+    concern3: 4,
+    // ... all 14 ratings
+  },
+  recommendations: [
+    {
+      pdfId: "academic-learning",
+      reason: "Based on your concerns about school struggles and giving up easily..."
+    },
+    // ... 3 PDFs total
+  ],
+  emailSent: true
+}
+
+Responsive Design Requirements
+Mobile First: All pages must work perfectly on 375px width
+Breakpoints:
+Mobile: 375px - 767px (single column)
+Tablet: 768px - 1023px (2-column where appropriate)
+Desktop: 1024px+ (max-width 1280px centered)
+Touch-Friendly:
+Minimum button size: 44x44px
+Radio buttons at least 40x40px with spacing
+Form inputs minimum height 48px
+
+Email Template
+Subject: "Your Personalized Parenting Guide from AGT"
+Body:
+html
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <img src="[AGT LOGO]" alt="AGT" style="width: 200px; margin: 20px 0;">
+  
+  <h1 style="color: #3FA9F5;">Thank You for Taking the Assessment! 🌱</h1>
+  
+  <p>Dear [Parent Name],</p>
+  
+  <p>Thank you for taking the time to complete our parenting assessment. Based on your responses, we've prepared personalized resources to support your child's development.</p>
+  
+  <h2>Your Top 3 Recommended Guides:</h2>
+  
+  <div style="border: 1px solid #e0e0e0; padding: 15px; margin: 15px 0; border-radius: 8px;">
+    <h3>[PDF Title 1]</h3>
+    <p>[Brief description]</p>
+    <a href="[Download Link]" style="background: #3FA9F5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Download PDF</a>
+  </div>
+  
+  [Repeat for PDF 2 and 3]
+  
+  <h2>Your Assessment Summary:</h2>
+  <ul>
+    <li>Child's Age: [X] years</li>
+    <li>Areas of Highest Concern: [List concerns rated 4-5]</li>
+  </ul>
+  
+  <h2>Next Steps:</h2>
+  <p>Want to understand your child's unique genetic traits? Our DNA tests provide deeper insights into their:</p>
+  <ul>
+    <li>Natural talents and learning styles</li>
+    <li>Emotional intelligence (EQ) traits</li>
+    <li>Health and nutrition needs</li>
+  </ul>
+  
+  <a href="https://www.agtgenetics.com" style="background: #2E8BC0; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 20px 0;">Explore DNA Testing</a>
+  
+  <p style="color: #7A7A7A; font-size: 14px; margin-top: 30px;">
+    Questions? Reply to this email or visit our website.<br>
